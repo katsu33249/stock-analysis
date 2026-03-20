@@ -4,14 +4,461 @@
     "version": "3.0.0",
     "description": "設定ファイル駆動の機敏な株式分析システム"
   },
+
   "phase": {
-    "current": "phase_1"
+    "current": "phase_1",
+    "phases": {
+      "phase_1": {
+        "name": "テスト実行",
+        "description": "15社でStrategy・Snapshot・正規化を検証",
+        "num_companies": 15,
+        "duration_minutes": 3,
+        "objective": [
+          "Strategy パターンが正しく動作するか",
+          "Snapshot 機能が正常に保存されるか",
+          "正規化ロジックが期待通りか",
+          "RateLimiter が API 制限を守るか",
+          "ログシステムでデバッグ可能か"
+        ]
+      },
+      "phase_2": {
+        "name": "検証実行",
+        "description": "100社でStrategy の戦略性を検証",
+        "num_companies": 100,
+        "duration_minutes": 25,
+        "objective": [
+          "各 Strategy が異なるランキングを出しているか",
+          "ランキングに説得力があるか",
+          "ウォッチリスト機能が正常か"
+        ]
+      },
+      "phase_3": {
+        "name": "本番運用",
+        "description": "全企業（500+社）で本番環境確認",
+        "num_companies": 500,
+        "duration_minutes": 15,
+        "objective": [
+          "全企業に対して安定稼働",
+          "GitHub Actions で定期実行",
+          "Discord への通知が正常"
+        ]
+      }
+    }
   },
+
+  "data_sources": {
+    "jquants": {
+      "api_url": "https://api.jquants.com/v2",
+      "auth_method": "header",
+      "auth_key": "x-api-key",
+      "rate_limit": {
+        "requests": 25,
+        "window_seconds": 60
+      },
+      "endpoints": {
+        "equities": "/equities",
+        "quotes": "/markets/quotes",
+        "financials": "/fins/statements"
+      }
+    },
+    "edinet": {
+      "api_url": "https://disclosure.edinet-fsa.go.jp/api/v2",
+      "auth_method": "none",
+      "enabled": false
+    }
+  },
+
   "companies": {
+    "source_format": "inline_json",
+    "source_file": null,
+    "filter_by_phase": true,
     "data": [
-      {"code": "1143", "name": "FPG"},
-      {"code": "3284", "name": "フージャース"},
-      {"code": "9762", "name": "T&D"}
+      {
+        "code": "1143",
+        "name": "FPG",
+        "sector": "証券",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 6.2,
+          "eps_growth": 2.5,
+          "per": 8.5,
+          "pbr": 0.95,
+          "expected_dividend_rank": "Top 3",
+          "test_purpose": "Dividend Strategy が配当を正しく重視しているか"
+        }
+      },
+      {
+        "code": "3284",
+        "name": "フージャース",
+        "sector": "不動産",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 5.1,
+          "eps_growth": -2.0,
+          "per": 10.5,
+          "pbr": 1.15,
+          "expected_dividend_rank": "Top 10",
+          "test_purpose": "配当と割安の両立"
+        }
+      },
+      {
+        "code": "9762",
+        "name": "T&D",
+        "sector": "保険",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 2.6,
+          "eps_growth": 15.0,
+          "per": 9.2,
+          "pbr": 0.85,
+          "expected_dividend_rank": "Top 50",
+          "test_purpose": "複雑な財務データ処理"
+        }
+      },
+      {
+        "code": "6326",
+        "name": "J-ADVAN",
+        "sector": "建設",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 1.2,
+          "eps_growth": 22.5,
+          "per": 18.5,
+          "pbr": 1.8,
+          "expected_growth_rank": "Top 10",
+          "test_purpose": "EPS成長の重視確認"
+        }
+      },
+      {
+        "code": "4755",
+        "name": "楽天",
+        "sector": "IT",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": null,
+          "per": null,
+          "pbr": 1.2,
+          "expected_dividend_rank": "下位 10",
+          "test_purpose": "赤字企業の例外処理（Null許容）"
+        }
+      },
+      {
+        "code": "2413",
+        "name": "ADVAN",
+        "sector": "SIer",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 0.8,
+          "eps_growth": 18.2,
+          "per": 25.5,
+          "pbr": 2.1,
+          "expected_growth_rank": "Top 10",
+          "test_purpose": "高PER判定確認"
+        }
+      },
+      {
+        "code": "6758",
+        "name": "Sony",
+        "sector": "電機",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 2.1,
+          "eps_growth": 8.5,
+          "per": 15.0,
+          "pbr": 1.8,
+          "expected_value_rank": "Top 10",
+          "test_purpose": "割安判定確認"
+        }
+      },
+      {
+        "code": "8801",
+        "name": "三井不動産",
+        "sector": "不動産",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 5.2,
+          "per": 11.2,
+          "pbr": 0.95,
+          "expected_value_rank": "Top 10",
+          "test_purpose": "PBR割安判定"
+        }
+      },
+      {
+        "code": "9020",
+        "name": "JR東海",
+        "sector": "鉄道",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 2.1,
+          "eps_growth": 3.5,
+          "per": 13.5,
+          "pbr": 1.0,
+          "expected_value_rank": "中程度",
+          "test_purpose": "基準値・中立企業"
+        }
+      },
+      {
+        "code": "6861",
+        "name": "キーエンス",
+        "sector": "計測機器",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 0.5,
+          "eps_growth": 35.0,
+          "per": 305.0,
+          "pbr": 4.2,
+          "expected_value_rank": "下位 10",
+          "test_purpose": "外れ値処理・正規化テスト"
+        }
+      },
+      {
+        "code": "7974",
+        "name": "Nintendo",
+        "sector": "ゲーム",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 12.5,
+          "per": 19.5,
+          "pbr": 2.5,
+          "test_purpose": "異業界処理"
+        }
+      },
+      {
+        "code": "9432",
+        "name": "NTT",
+        "sector": "通信",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 2.1,
+          "per": 14.8,
+          "pbr": 1.35,
+          "test_purpose": "大型株処理"
+        }
+      },
+      {
+        "code": "9984",
+        "name": "SoftBank",
+        "sector": "IT",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 28.5,
+          "per": 20.0,
+          "pbr": 1.6,
+          "test_purpose": "複雑な構造"
+        }
+      },
+      {
+        "code": "1801",
+        "name": "大成建設",
+        "sector": "建設",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 3.8,
+          "eps_growth": 5.5,
+          "per": 9.2,
+          "pbr": 0.88,
+          "test_purpose": "セクター多様性"
+        }
+      },
+      {
+        "code": "2914",
+        "name": "JT",
+        "sector": "たばこ",
+        "phase_1": true,
+        "phase_2": true,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 7.2,
+          "eps_growth": -3.5,
+          "per": 11.5,
+          "pbr": 0.78,
+          "expected_dividend_rank": "Top 10",
+          "test_purpose": "成熟企業・逆張り"
+        }
+      },
+      {
+        "code": "8058",
+        "name": "M&A",
+        "sector": "金融",
+        "phase_1": true,
+        "phase_2": false,
+        "phase_3": true,
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 45.0,
+          "per": 35.5,
+          "pbr": 3.8,
+          "test_purpose": "小型成長株・無配当"
+        }
+      }
     ]
+  },
+
+  "strategies": {
+    "enabled": ["dividend", "growth", "value"],
+    "dividend": {
+      "name": "DividendStrategy",
+      "enabled": true,
+      "description": "配当利回り重視",
+      "weights": {
+        "dividend_yield": 0.40,
+        "roe": 0.15,
+        "fcf_coverage": 0.25,
+        "payout_ratio": 0.10,
+        "doe": 0.10
+      },
+      "normalization": {
+        "method": "min_max",
+        "percentile_min": 5,
+        "percentile_max": 95
+      }
+    },
+    "growth": {
+      "name": "GrowthStrategy",
+      "enabled": true,
+      "description": "成長率重視",
+      "weights": {
+        "eps_growth": 0.40,
+        "revenue_growth": 0.20,
+        "fcf_growth": 0.20,
+        "roe": 0.20
+      },
+      "normalization": {
+        "method": "min_max",
+        "percentile_min": 5,
+        "percentile_max": 95
+      }
+    },
+    "value": {
+      "name": "ValueStrategy",
+      "enabled": true,
+      "description": "割安株重視",
+      "weights": {
+        "per": 0.35,
+        "pbr": 0.25,
+        "roe": 0.20,
+        "doe": 0.20
+      },
+      "normalization": {
+        "method": "min_max",
+        "percentile_min": 5,
+        "percentile_max": 95
+      },
+      "invert_metrics": ["per", "pbr", "doe"]
+    }
+  },
+
+  "output": {
+    "formats": ["console", "csv", "excel", "json"],
+    "console": {
+      "enabled": true,
+      "verbose": true,
+      "show_metadata": true
+    },
+    "csv": {
+      "enabled": false,
+      "output_path": "./results/phase1_results.csv",
+      "include_metadata": true
+    },
+    "excel": {
+      "enabled": false,
+      "output_path": "./results/phase1_results.xlsx",
+      "include_metadata": true,
+      "sheet_per_strategy": true
+    },
+    "json": {
+      "enabled": false,
+      "output_path": "./results/phase1_results.json"
+    }
+  },
+
+  "snapshot": {
+    "enabled": true,
+    "storage_path": "./snapshots",
+    "format": "json",
+    "compress": false,
+    "retention_days": 90
+  },
+
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    "handlers": ["console", "file"],
+    "file_path": "./logs/phase1.log"
+  },
+
+  "error_handling": {
+    "null_tolerance": "ignore",
+    "null_tolerance_description": "Null値は無視して処理を続ける",
+    "error_strategy": "continue",
+    "error_strategy_description": "エラーが発生しても処理を続ける",
+    "skip_invalid_companies": true,
+    "skip_invalid_companies_description": "データが不完全な企業はスキップ"
+  },
+
+  "validation": {
+    "phase_1": {
+      "expected_results": {
+        "dividend_strategy": {
+          "top_1": {
+            "code": "1143",
+            "name": "FPG",
+            "reason": "配当利回り最高 6.2%"
+          },
+          "top_3_codes": ["1143", "2914", "3284"]
+        },
+        "growth_strategy": {
+          "top_1": {
+            "code": "6861",
+            "name": "キーエンス",
+            "reason": "EPS成長率最高 35%"
+          },
+          "top_3_codes": ["6861", "9984", "6326"]
+        },
+        "value_strategy": {
+          "bottom_3_codes": ["6861", "2413", "4755"],
+          "reason": "PER が高い企業は下位"
+        }
+      },
+      "checks": [
+        "3つの Strategy が異なるランキングを出しているか",
+        "キーエンス（外れ値）が Value で下位、Growth で高位か",
+        "楽天（赤字、Null）でエラーが出ていないか",
+        "Snapshot ファイルが 3つ保存されているか"
+      ]
+    }
   }
 }
