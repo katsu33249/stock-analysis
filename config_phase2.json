@@ -1,0 +1,1212 @@
+{
+  "system": {
+    "name": "Stock Analysis Platform v3.0 - Phase 2",
+    "version": "2.0.0",
+    "phase": "phase_2",
+    "description": "100社対象 爆発初動株スクリーニング + 財務分析"
+  },
+  "companies": {
+    "data": [
+      {
+        "code": "1143",
+        "name": "FPG",
+        "metadata": {
+          "dividend_yield": 6.2,
+          "eps_growth": 2.5,
+          "per": 8.5,
+          "pbr": 0.95,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3284",
+        "name": "フージャース",
+        "metadata": {
+          "dividend_yield": 5.1,
+          "eps_growth": -2.0,
+          "per": 10.5,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9762",
+        "name": "T&D",
+        "metadata": {
+          "dividend_yield": 2.6,
+          "eps_growth": 15.0,
+          "per": 9.2,
+          "pbr": 0.85,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6326",
+        "name": "J-ADVAN",
+        "metadata": {
+          "dividend_yield": 1.2,
+          "eps_growth": 22.5,
+          "per": 18.5,
+          "pbr": 1.8,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4755",
+        "name": "楽天",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 0.0,
+          "per": 0.0,
+          "pbr": 1.2,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2413",
+        "name": "ADVAN",
+        "metadata": {
+          "dividend_yield": 0.8,
+          "eps_growth": 18.2,
+          "per": 25.5,
+          "pbr": 2.1,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6758",
+        "name": "Sony",
+        "metadata": {
+          "dividend_yield": 2.1,
+          "eps_growth": 8.5,
+          "per": 15.0,
+          "pbr": 1.8,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8801",
+        "name": "三井不動産",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 5.2,
+          "per": 11.2,
+          "pbr": 0.95,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9020",
+        "name": "JR東海",
+        "metadata": {
+          "dividend_yield": 2.1,
+          "eps_growth": 3.5,
+          "per": 13.5,
+          "pbr": 1.0,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6861",
+        "name": "キーエンス",
+        "metadata": {
+          "dividend_yield": 0.5,
+          "eps_growth": 35.0,
+          "per": 305.0,
+          "pbr": 4.2,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7974",
+        "name": "Nintendo",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 12.5,
+          "per": 19.5,
+          "pbr": 2.5,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9432",
+        "name": "NTT",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 2.1,
+          "per": 14.8,
+          "pbr": 1.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9984",
+        "name": "SoftBank",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 28.5,
+          "per": 20.0,
+          "pbr": 1.6,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "1801",
+        "name": "大成建設",
+        "metadata": {
+          "dividend_yield": 3.8,
+          "eps_growth": 5.5,
+          "per": 9.2,
+          "pbr": 0.88,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2914",
+        "name": "JT",
+        "metadata": {
+          "dividend_yield": 7.2,
+          "eps_growth": -3.5,
+          "per": 11.5,
+          "pbr": 0.78,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8306",
+        "name": "三井住友FG",
+        "metadata": {
+          "dividend_yield": 4.2,
+          "eps_growth": 3.8,
+          "per": 10.2,
+          "pbr": 0.75,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8411",
+        "name": "みずほFG",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 2.1,
+          "per": 9.5,
+          "pbr": 0.68,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9983",
+        "name": "ファーストリテイリング",
+        "metadata": {
+          "dividend_yield": 1.5,
+          "eps_growth": 18.5,
+          "per": 22.0,
+          "pbr": 2.8,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7203",
+        "name": "トヨタ自動車",
+        "metadata": {
+          "dividend_yield": 3.0,
+          "eps_growth": 5.2,
+          "per": 11.8,
+          "pbr": 0.98,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6902",
+        "name": "デンソー",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 4.8,
+          "per": 13.2,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8031",
+        "name": "三井物産",
+        "metadata": {
+          "dividend_yield": 4.8,
+          "eps_growth": 6.2,
+          "per": 10.5,
+          "pbr": 0.92,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8058",
+        "name": "三菱商事",
+        "metadata": {
+          "dividend_yield": 4.5,
+          "eps_growth": 5.8,
+          "per": 11.0,
+          "pbr": 0.95,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5108",
+        "name": "ブリヂストン",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 4.5,
+          "per": 12.5,
+          "pbr": 1.08,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7270",
+        "name": "富士通",
+        "metadata": {
+          "dividend_yield": 2.1,
+          "eps_growth": 15.2,
+          "per": 18.5,
+          "pbr": 1.42,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6501",
+        "name": "日立製作所",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 8.5,
+          "per": 13.8,
+          "pbr": 1.25,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6952",
+        "name": "カシオ計算機",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 3.2,
+          "per": 15.0,
+          "pbr": 1.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3382",
+        "name": "セブン&アイHLD",
+        "metadata": {
+          "dividend_yield": 3.8,
+          "eps_growth": 2.5,
+          "per": 14.2,
+          "pbr": 1.18,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2768",
+        "name": "双日",
+        "metadata": {
+          "dividend_yield": 4.2,
+          "eps_growth": 5.5,
+          "per": 9.8,
+          "pbr": 0.88,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5411",
+        "name": "ジェイテクト",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 4.2,
+          "per": 12.5,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5631",
+        "name": "日本製鋼所",
+        "metadata": {
+          "dividend_yield": 2.1,
+          "eps_growth": 3.8,
+          "per": 13.2,
+          "pbr": 1.22,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4482",
+        "name": "ウォーターダイレクト",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 8.5,
+          "per": 25.5,
+          "pbr": 3.2,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3659",
+        "name": "ネクソン",
+        "metadata": {
+          "dividend_yield": 0.5,
+          "eps_growth": 12.5,
+          "per": 22.0,
+          "pbr": 2.8,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6145",
+        "name": "TS TECH",
+        "metadata": {
+          "dividend_yield": 1.8,
+          "eps_growth": 6.5,
+          "per": 14.8,
+          "pbr": 1.32,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2593",
+        "name": "イートアンド",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 25.2,
+          "per": 18.5,
+          "pbr": 2.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7013",
+        "name": "IHI",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 7.2,
+          "per": 13.5,
+          "pbr": 1.28,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "1605",
+        "name": "INPEX",
+        "metadata": {
+          "dividend_yield": 5.5,
+          "eps_growth": 4.2,
+          "per": 9.0,
+          "pbr": 0.82,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3099",
+        "name": "カルナバイオサイエンス",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 35.5,
+          "per": 32.5,
+          "pbr": 4.8,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4689",
+        "name": "Zホールディングス",
+        "metadata": {
+          "dividend_yield": 2.0,
+          "eps_growth": 18.5,
+          "per": 16.8,
+          "pbr": 1.85,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8801",
+        "name": "三井不動産",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 5.2,
+          "per": 11.2,
+          "pbr": 0.95,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8802",
+        "name": "三菱地所",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 4.8,
+          "per": 10.8,
+          "pbr": 0.92,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2801",
+        "name": "キッコーマン",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 2.5,
+          "per": 18.5,
+          "pbr": 1.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2802",
+        "name": "味の素",
+        "metadata": {
+          "dividend_yield": 2.2,
+          "eps_growth": 5.8,
+          "per": 16.2,
+          "pbr": 1.42,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2914",
+        "name": "JT",
+        "metadata": {
+          "dividend_yield": 7.2,
+          "eps_growth": -3.5,
+          "per": 11.5,
+          "pbr": 0.78,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6098",
+        "name": "リクルートHLD",
+        "metadata": {
+          "dividend_yield": 0.8,
+          "eps_growth": 22.5,
+          "per": 24.5,
+          "pbr": 3.18,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9101",
+        "name": "日本郵船",
+        "metadata": {
+          "dividend_yield": 6.2,
+          "eps_growth": 8.2,
+          "per": 8.5,
+          "pbr": 0.72,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9104",
+        "name": "商船三井",
+        "metadata": {
+          "dividend_yield": 5.8,
+          "eps_growth": 7.5,
+          "per": 9.2,
+          "pbr": 0.78,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "1332",
+        "name": "ユニー・ファミマHLD",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 1.2,
+          "per": 15.5,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3405",
+        "name": "クリーク・アンド・リバー",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 15.2,
+          "per": 20.5,
+          "pbr": 2.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4063",
+        "name": "信越化学工業",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 8.5,
+          "per": 17.2,
+          "pbr": 1.48,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4578",
+        "name": "大塚ホールディングス",
+        "metadata": {
+          "dividend_yield": 1.5,
+          "eps_growth": 12.5,
+          "per": 19.8,
+          "pbr": 1.62,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4901",
+        "name": "富士フイルムHLD",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 6.5,
+          "per": 14.5,
+          "pbr": 1.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5406",
+        "name": "神戸鋼所",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 5.2,
+          "per": 12.8,
+          "pbr": 1.05,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5813",
+        "name": "アルミナ",
+        "metadata": {
+          "dividend_yield": 2.0,
+          "eps_growth": 4.8,
+          "per": 13.5,
+          "pbr": 1.18,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6273",
+        "name": "SMC",
+        "metadata": {
+          "dividend_yield": 1.2,
+          "eps_growth": 18.5,
+          "per": 28.5,
+          "pbr": 3.25,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7012",
+        "name": "川崎重工業",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 7.5,
+          "per": 14.2,
+          "pbr": 1.28,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7739",
+        "name": "キャノン",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 4.2,
+          "per": 13.8,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8750",
+        "name": "第一生命保険",
+        "metadata": {
+          "dividend_yield": 4.2,
+          "eps_growth": 3.5,
+          "per": 11.2,
+          "pbr": 0.95,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "8766",
+        "name": "東京海上HD",
+        "metadata": {
+          "dividend_yield": 3.8,
+          "eps_growth": 4.2,
+          "per": 10.8,
+          "pbr": 0.88,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9005",
+        "name": "東京急行電鉄",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 5.5,
+          "per": 12.5,
+          "pbr": 1.12,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9007",
+        "name": "名古屋鉄道",
+        "metadata": {
+          "dividend_yield": 3.0,
+          "eps_growth": 4.8,
+          "per": 13.2,
+          "pbr": 1.08,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9008",
+        "name": "京王電鉄",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 5.2,
+          "per": 13.8,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "1518",
+        "name": "サンゼン",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 22.5,
+          "per": 21.5,
+          "pbr": 2.85,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3407",
+        "name": "アルファポリス",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 25.8,
+          "per": 19.2,
+          "pbr": 2.45,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6501",
+        "name": "日立製作所",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 8.5,
+          "per": 13.8,
+          "pbr": 1.25,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7751",
+        "name": "キヤノン",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 4.2,
+          "per": 13.8,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "9001",
+        "name": "東武鉄道",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 6.2,
+          "per": 14.5,
+          "pbr": 1.22,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "1928",
+        "name": "JALUX",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 3.5,
+          "per": 15.2,
+          "pbr": 1.32,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2282",
+        "name": "日本ハム",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 2.8,
+          "per": 17.5,
+          "pbr": 1.45,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "2871",
+        "name": "ニチレキ",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 18.5,
+          "per": 23.5,
+          "pbr": 2.75,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3086",
+        "name": "J.フロント リテイリング",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 4.5,
+          "per": 15.2,
+          "pbr": 1.25,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3289",
+        "name": "東急不動産HD",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 5.2,
+          "per": 13.5,
+          "pbr": 1.18,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "3763",
+        "name": "プロシップ",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 20.5,
+          "per": 22.5,
+          "pbr": 2.65,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4344",
+        "name": "ソースネクスト",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 18.2,
+          "per": 21.0,
+          "pbr": 2.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4689",
+        "name": "Z HD",
+        "metadata": {
+          "dividend_yield": 2.0,
+          "eps_growth": 18.5,
+          "per": 16.8,
+          "pbr": 1.85,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "4704",
+        "name": "トレンドマイクロ",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 6.8,
+          "per": 18.5,
+          "pbr": 1.95,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5108",
+        "name": "ブリヂストン",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 4.5,
+          "per": 12.5,
+          "pbr": 1.08,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5214",
+        "name": "日本電気硝子",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 5.5,
+          "per": 14.2,
+          "pbr": 1.32,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5411",
+        "name": "ジェイテクト",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 4.2,
+          "per": 12.5,
+          "pbr": 1.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5608",
+        "name": "プレミアムウォーターHLD",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 16.5,
+          "per": 24.5,
+          "pbr": 3.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "5857",
+        "name": "アサヒグループ",
+        "metadata": {
+          "dividend_yield": 4.2,
+          "eps_growth": 3.2,
+          "per": 16.8,
+          "pbr": 1.45,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6034",
+        "name": "京写",
+        "metadata": {
+          "dividend_yield": 2.0,
+          "eps_growth": 7.2,
+          "per": 15.5,
+          "pbr": 1.38,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6098",
+        "name": "リクルートHLD",
+        "metadata": {
+          "dividend_yield": 0.8,
+          "eps_growth": 22.5,
+          "per": 24.5,
+          "pbr": 3.18,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6145",
+        "name": "TS TECH",
+        "metadata": {
+          "dividend_yield": 1.8,
+          "eps_growth": 6.5,
+          "per": 14.8,
+          "pbr": 1.32,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6157",
+        "name": "日本工業",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 4.8,
+          "per": 13.5,
+          "pbr": 1.22,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6273",
+        "name": "SMC",
+        "metadata": {
+          "dividend_yield": 1.2,
+          "eps_growth": 18.5,
+          "per": 28.5,
+          "pbr": 3.25,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6301",
+        "name": "コマツ",
+        "metadata": {
+          "dividend_yield": 3.8,
+          "eps_growth": 6.2,
+          "per": 12.8,
+          "pbr": 1.12,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6406",
+        "name": "フジテレビジョン",
+        "metadata": {
+          "dividend_yield": 5.2,
+          "eps_growth": 2.5,
+          "per": 14.5,
+          "pbr": 1.08,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6471",
+        "name": "日本精工",
+        "metadata": {
+          "dividend_yield": 3.5,
+          "eps_growth": 5.8,
+          "per": 13.2,
+          "pbr": 1.18,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6479",
+        "name": "ミノルタ",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 4.2,
+          "per": 15.8,
+          "pbr": 1.42,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6594",
+        "name": "日本電解",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 14.5,
+          "per": 19.5,
+          "pbr": 2.15,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6648",
+        "name": "SKY Perfect JSAT",
+        "metadata": {
+          "dividend_yield": 4.5,
+          "eps_growth": 3.2,
+          "per": 11.5,
+          "pbr": 0.95,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6752",
+        "name": "パナソニック",
+        "metadata": {
+          "dividend_yield": 3.2,
+          "eps_growth": 7.5,
+          "per": 13.8,
+          "pbr": 1.28,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6762",
+        "name": "TDK",
+        "metadata": {
+          "dividend_yield": 2.5,
+          "eps_growth": 8.5,
+          "per": 14.5,
+          "pbr": 1.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "6981",
+        "name": "村田製作所",
+        "metadata": {
+          "dividend_yield": 1.8,
+          "eps_growth": 16.2,
+          "per": 22.5,
+          "pbr": 2.65,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7182",
+        "name": "ゆうちょ銀行",
+        "metadata": {
+          "dividend_yield": 4.8,
+          "eps_growth": 2.5,
+          "per": 10.2,
+          "pbr": 0.88,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7186",
+        "name": "コブラ",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 12.5,
+          "per": 20.5,
+          "pbr": 2.35,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7267",
+        "name": "ホンダ",
+        "metadata": {
+          "dividend_yield": 3.8,
+          "eps_growth": 6.5,
+          "per": 11.2,
+          "pbr": 1.05,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7351",
+        "name": "杉田エース",
+        "metadata": {
+          "dividend_yield": 2.2,
+          "eps_growth": 5.8,
+          "per": 15.5,
+          "pbr": 1.42,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7381",
+        "name": "ベイカレント",
+        "metadata": {
+          "dividend_yield": 0.0,
+          "eps_growth": 25.5,
+          "per": 18.5,
+          "pbr": 2.45,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      },
+      {
+        "code": "7832",
+        "name": "バンダイナムコHD",
+        "metadata": {
+          "dividend_yield": 2.8,
+          "eps_growth": 8.2,
+          "per": 16.5,
+          "pbr": 1.58,
+          "roe": 10.0,
+          "doe": 1.0
+        }
+      }
+    ]
+  }
+}
