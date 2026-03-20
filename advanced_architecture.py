@@ -69,9 +69,9 @@ def main():
         
         logger.info(f"✅ Excel 出力完了: {output_file}")
         
-        # 6. JSON スナップショット保存
+        # 6. JSON スナップショット保存（ensure_ascii削除）
         snapshot_file = f"snapshots/phase1_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        df.to_json(snapshot_file, orient='records', force_ascii=False, ensure_ascii=False)
+        df.to_json(snapshot_file, orient='records', force_ascii=False)
         
         logger.info(f"✅ スナップショット保存: {snapshot_file}")
         
