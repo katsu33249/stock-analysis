@@ -9,6 +9,9 @@ numpy==1.24.3
 # Excel 出力
 openpyxl==3.1.2
 
+# Parquet キャッシュ
+pyarrow==13.0.0
+
 # ロギング（標準ライブラリのみ使用）
 # logging (built-in)
 
