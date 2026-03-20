@@ -74,7 +74,7 @@ jobs:
           path: logs/
           retention-days: 7
       
-　　　　# Step 9: 成功時の通知（Discord Webhook）
+      # Step 9: 成功時の通知（Discord Webhook）
       - name: Notify success to Discord
         if: success()
         uses: sarisia/actions-status-discord@v1
@@ -89,7 +89,7 @@ jobs:
             結果保存: ✅ 完了
           color: 00FF00
       
-  　    # Step 10: 失敗時の通知（Discord Webhook）
+      # Step 10: 失敗時の通知（Discord Webhook）
       - name: Notify failure to Discord
         if: failure()
         uses: sarisia/actions-status-discord@v1
