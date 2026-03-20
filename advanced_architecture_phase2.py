@@ -251,51 +251,112 @@ def main():
             
             time.sleep(0.1)
         
-        # 5. 結果を DataFrame に変換
-        if results:
-            df_results = pd.DataFrame(results)
+        # 5. 爆発初動株を抽出
+        explosion_stocks = [r for r in results if r['score'] >= 50]
+        
+        # 6. 全社のスコアを DataFrame に変換
+        all_company_scores = []
+        for company in companies_list:
+            code = company['code']
+            name = company['name']
+            metadata = company.get('metadata', {})
+            
+            # その企業の検出結果を探す
+            result = next((r for r in results if r['code'] == code), None)
+            
+            if result:
+                all_company_scores.append({
+                    'code': code,
+                    'name': name,
+                    'score': result['score'],
+                    'price': result['price'],
+                    'volume': result['volume'],
+                    'dividend_yield': metadata.get('dividend_yield', 0),
+                    'eps_growth': metadata.get('eps_growth', 0),
+                    'per': metadata.get('per', 0),
+                    'pbr': metadata.get('pbr', 0),
+                    'roe': metadata.get('roe', 0),
+                    'doe': metadata.get('doe', 0)
+                })
+            else:
+                # スコア計算されなかった企業は 0 スコア
+                all_company_scores.append({
+                    'code': code,
+                    'name': name,
+                    'score': 0,
+                    'price': 0,
+                    'volume': 0,
+                    'dividend_yield': metadata.get('dividend_yield', 0),
+                    'eps_growth': metadata.get('eps_growth', 0),
+                    'per': metadata.get('per', 0),
+                    'pbr': metadata.get('pbr', 0),
+                    'roe': metadata.get('roe', 0),
+                    'doe': metadata.get('doe', 0)
+                })
+        
+        # スコアでソート
+        df_all = pd.DataFrame(all_company_scores)
+        df_all = df_all.sort_values('score', ascending=False).reset_index(drop=True)
+        df_all['順位'] = range(1, len(df_all) + 1)
+        
+        # 爆発初動株のみ
+        df_results = pd.DataFrame(explosion_stocks)
+        if len(df_results) > 0:
             df_results = df_results.sort_values('score', ascending=False).reset_index(drop=True)
             df_results['順位'] = range(1, len(df_results) + 1)
         else:
             df_results = pd.DataFrame(columns=['順位', 'code', 'name', 'score', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe'])
         
-        logger.info(f"✅ 検出完了: {len(df_results)} 件")
+        logger.info(f"✅ 爆発初動株: {len(df_results)} 件")
+        logger.info(f"📊 全社スコア: {len(df_all)} 件")
         
         # 6. ディレクトリを作成
         os.makedirs('results', exist_ok=True)
         os.makedirs('logs', exist_ok=True)
         os.makedirs('snapshots', exist_ok=True)
         
-        # 7. Excel に出力
+        # 7. Excel に出力（2シート）
         output_file = 'results/phase2_results.xlsx'
-        columns = ['順位', 'code', 'name', 'score', 'price', 'volume', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe']
-        df_output = df_results[columns]
-        df_output.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
-        df_output.to_excel(output_file, index=False, sheet_name='爆発初動株')
+        
+        # Sheet 1: 全社スコア
+        columns_all = ['順位', 'code', 'name', 'score', 'price', 'volume', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe']
+        df_output_all = df_all[columns_all]
+        df_output_all.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
+        
+        # Sheet 2: 爆発初動株のみ
+        columns_explosion = ['順位', 'code', 'name', 'score', 'price', 'volume', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe']
+        df_output_explosion = df_results[columns_explosion]
+        df_output_explosion.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
+        
+        # Excel ファイルに複数シートで保存
+        with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
+            df_output_all.to_excel(writer, sheet_name='全社スコア', index=False)
+            df_output_explosion.to_excel(writer, sheet_name='爆発初動株', index=False)
         
         logger.info(f"✅ Excel 出力完了: {output_file}")
         
         # 8. JSON スナップショット保存
         snapshot_file = f"snapshots/phase2_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        df_results.to_json(snapshot_file, orient='records', force_ascii=False)
+        df_all.to_json(snapshot_file, orient='records', force_ascii=False)
         
         logger.info(f"✅ スナップショット保存: {snapshot_file}")
         
         # 9. Discord に送信
         webhook_url = os.getenv('DISCORD_WEBHOOK')
-        send_to_discord(webhook_url, output_file, df_output)
+        send_to_discord(webhook_url, output_file, df_output_explosion)
         
         # 10. ログ出力
         logger.info("=" * 70)
         logger.info("Phase 2 Screening 完了")
         logger.info("=" * 70)
         logger.info(f"企業データ抽出: ✅ 完了 ({len(companies_list)} 社)")
+        logger.info(f"全社スコア計算: ✅ 完了 ({len(df_all)} 社)")
         logger.info(f"爆発初動検出: ✅ 完了 ({len(df_results)} 件)")
-        logger.info(f"結果保存: ✅ 完了")
+        logger.info(f"結果保存: ✅ 完了 (全社スコア + 爆発初動株)")
         logger.info(f"Discord 送信: ✅ 完了")
         
-        print("\n【爆発初動株ランキング (Phase 2)】")
-        print(df_output.head(20).to_string(index=False))
+        print("\n【爆発初動株ランキング (Top 20)】")
+        print(df_output_explosion.head(20).to_string(index=False))
         
         return True
     
