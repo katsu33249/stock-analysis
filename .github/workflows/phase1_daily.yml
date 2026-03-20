@@ -74,12 +74,12 @@ jobs:
           path: logs/
           retention-days: 7
       
-      # Step 9: 成功時の通知（Discord Webhook）
+# Step 9: 成功時の通知（Discord Webhook）
       - name: Notify success to Discord
-        if: success()
+        if: success() && secrets.DISCORD_WEBHOOK != ''
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: success
           title: "✅ Phase 1 Screening Completed"
           description: |
@@ -90,10 +90,10 @@ jobs:
       
       # Step 10: 失敗時の通知（Discord Webhook）
       - name: Notify failure to Discord
-        if: failure()
+        if: failure() && secrets.DISCORD_WEBHOOK != ''
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: failure
           title: "❌ Phase 1 Screening Failed"
           description: |
