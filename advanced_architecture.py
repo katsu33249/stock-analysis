@@ -2,6 +2,7 @@
 """
 【本番版】Stock Analysis Platform v3.0
 J-Quants API から実データを取得して爆発初動株を検出
+Discord に Excel ファイルと Embed メッセージを送信
 """
 
 import os
@@ -151,6 +152,45 @@ class ExplosionStockDetector:
             logger.warning(f"⚠️ {code} 検出処理エラー: {e}")
             return None
 
+def send_to_discord(webhook_url, excel_file, df_results):
+    """Discord に Excel ファイルと Embed メッセージを送信"""
+    try:
+        if not webhook_url:
+            logger.warning("⚠️ Discord 送信をスキップ")
+            return
+        
+        # 1. Embed メッセージで結果を表示
+        embed_content = "🚀 **爆発初動株ランキング**\n\n"
+        
+        if len(df_results) > 0:
+            for idx, row in df_results.head(10).iterrows():
+                embed_content += f"**{int(row['順位'])}位. {row['code']} {row['name']}**\n"
+                embed_content += f"スコア: {int(row['score'])}点 | 株価: ¥{row['price']:.0f}\n"
+                embed_content += f"{row['details']}\n\n"
+        else:
+            embed_content += "爆発初動株が検出されませんでした\n"
+        
+        # Discord メッセージ送信（Embed）
+        data = {
+            'content': embed_content,
+            'username': 'Stock Analysis Bot'
+        }
+        requests.post(webhook_url, json=data, timeout=30)
+        logger.info("✅ Discord に Embed メッセージを送信")
+        
+        # 2. Excel ファイルを送信
+        if os.path.exists(excel_file):
+            with open(excel_file, 'rb') as f:
+                files = {'file': f}
+                data = {
+                    'content': '📊 詳細は添付の Excel ファイルをご覧ください'
+                }
+                requests.post(webhook_url, files=files, data=data, timeout=30)
+            logger.info("✅ Discord に Excel ファイルを送信")
+    
+    except Exception as e:
+        logger.warning(f"⚠️ Discord 送信エラー: {e}")
+
 def main():
     """メイン処理"""
     
@@ -222,14 +262,18 @@ def main():
         
         logger.info(f"✅ スナップショット保存: {snapshot_file}")
         
-        # 9. ログ出力
+        # 9. Discord に送信
+        webhook_url = os.getenv('DISCORD_WEBHOOK')
+        send_to_discord(webhook_url, output_file, df_results)
+        
+        # 10. ログ出力
         logger.info("=" * 70)
         logger.info("Phase 1 Screening 完了")
         logger.info("=" * 70)
         logger.info(f"企業データ抽出: ✅ 完了")
         logger.info(f"爆発初動検出: ✅ 完了 ({len(df_results)} 件)")
         logger.info(f"結果保存: ✅ 完了")
-        logger.info(f"出力ファイル: {output_file}")
+        logger.info(f"Discord 送信: ✅ 完了")
         
         print("\n【爆発初動株ランキング】")
         print(df_output.to_string(index=False))
