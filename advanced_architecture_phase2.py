@@ -252,11 +252,17 @@ def main():
         companies_list = config['companies']['data']
         logger.info(f"📊 企業数: {len(companies_list)}")
         
-        # 4. キャッシュマネージャーから検出
-        # ※ 事前に jquants_data_manager.py で キャッシュ を更新しておくこと
+        # 3. キャッシュマネージャーから検出
+        # ※ キャッシュがなければ自動生成
         from jquants_data_manager import JQuantsDataManager
         
         manager = JQuantsDataManager(api_key)
+        
+        # キャッシュがなければ自動生成
+        if len(manager.df_all) == 0:
+            logger.warning("⚠️ キャッシュが空 → 自動生成を開始します")
+            manager.enrich_all_companies(companies_list, fetch_full=True)
+        
         detector = ExplosionStockDetector()
         
         results = []
