@@ -47,15 +47,15 @@ class JQuantsDataFetcher:
         
         self.request_count += 1
     
-    def fetch_daily_bars(self, code, days=100):
-        """日足データを取得"""
+    def fetch_daily_bars(self, code, days=7300):  # 20年 ≈ 7300日
+        """日足データを取得（20年分一括）"""
         try:
             self.wait_rate_limit()
             
             url = f'{self.base_url}/equities/bars/daily'
             params = {
                 'code': code,
-                'from': (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d'),
+                'from': '2004-01-01',  # 過去20年分
                 'to': datetime.now().strftime('%Y-%m-%d')
             }
             
