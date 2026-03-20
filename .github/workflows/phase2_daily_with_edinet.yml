@@ -24,6 +24,8 @@ jobs:
           pip install requests pandas openpyxl numpy
       
       - name: Fetch EDINET Data
+        env:
+          EDINETDB_API_KEY: ${{ secrets.EDINETDB_API_KEY }}
         run: |
           python3 edinet_data_fetcher.py
       
