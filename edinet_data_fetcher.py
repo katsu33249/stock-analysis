@@ -36,10 +36,10 @@ class EDINETDBCachedFetcher:
                 return df
             except Exception as e:
                 logger.warning(f"⚠️ キャッシュ読み込み失敗: {e}")
-                return pd.DataFrame(columns=['sec_code', 'edinet_code', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'last_updated'])
+                return pd.DataFrame(columns=['sec_code', 'edinet_code', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'doe', 'last_updated'])
         else:
             logger.info("📂 キャッシュなし（初回実行）")
-            return pd.DataFrame(columns=['sec_code', 'edinet_code', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'last_updated'])
+            return pd.DataFrame(columns=['sec_code', 'edinet_code', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'doe', 'last_updated'])
     
     def _is_cache_expired(self, last_updated_str):
         """キャッシュが18時間経過したか判定"""
@@ -95,10 +95,11 @@ class EDINETDBCachedFetcher:
                 
                 return {
                     'roe': float(latest.get('roe', 10.0)) if latest.get('roe') else 10.0,
-                    'pbr': float(latest.get('bps', 1.0)) if latest.get('bps') else 1.0,  # bps から PBR を計算（簡易）
+                    'pbr': float(latest.get('bps', 1.0)) if latest.get('bps') else 1.0,
                     'per': float(latest.get('per', 15.0)) if latest.get('per') else 15.0,
                     'dividend_yield': float(latest.get('dividend_yield', 2.0)) if latest.get('dividend_yield') else 2.0,
-                    'eps_growth': float(latest.get('eps_growth', 5.0)) if latest.get('eps_growth') else 5.0
+                    'eps_growth': float(latest.get('eps_growth', 5.0)) if latest.get('eps_growth') else 5.0,
+                    'doe': float(latest.get('de_ratio', 1.0)) if latest.get('de_ratio') else 1.0  # D/E レシオ
                 }
             
             return None
@@ -132,7 +133,7 @@ class EDINETDBCachedFetcher:
                     'per': float(cached['per']),
                     'dividend_yield': float(cached['dividend_yield']),
                     'eps_growth': float(cached['eps_growth']),
-                    'doe': 1.0,
+                    'doe': float(cached['doe']),
                     'edinet_updated': cached['last_updated']
                 })
                 cache_hits += 1
@@ -147,7 +148,6 @@ class EDINETDBCachedFetcher:
                     
                     if ratios:
                         company['metadata'].update(ratios)
-                        company['metadata']['doe'] = 1.0
                         company['metadata']['edinet_updated'] = datetime.now().isoformat()
                         
                         # キャッシュに追加
@@ -159,17 +159,16 @@ class EDINETDBCachedFetcher:
                             'per': ratios['per'],
                             'dividend_yield': ratios['dividend_yield'],
                             'eps_growth': ratios['eps_growth'],
+                            'doe': ratios['doe'],
                             'last_updated': datetime.now().isoformat()
                         })
                         
-                        logger.info(f"📡 {sec_code} {name}: ROE={ratios['roe']:.1f}%, 配当利回り={ratios['dividend_yield']:.1f}%")
+                        logger.info(f"📡 {sec_code} {name}: ROE={ratios['roe']:.1f}%, 配当利回り={ratios['dividend_yield']:.1f}%, D/E={ratios['doe']:.2f}")
                     else:
                         logger.warning(f"⚠️ {sec_code}: 財務指標取得失敗、デフォルト値を使用")
-                        company['metadata']['doe'] = 1.0
                         company['metadata']['edinet_updated'] = datetime.now().isoformat()
                 else:
                     logger.warning(f"⚠️ {sec_code}: EDINET コード検索失敗、デフォルト値を使用")
-                    company['metadata']['doe'] = 1.0
                     company['metadata']['edinet_updated'] = datetime.now().isoformat()
                 
                 time.sleep(0.1)  # API レート制限対応
