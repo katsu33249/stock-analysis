@@ -70,13 +70,13 @@ class JQuantsDataManager:
         try:
             if fetch_full:
                 # 初回：20年分全データ
-                from_date = '2016-01-01'
+                from_date = '2016-03-20'
                 logger.info(f"📡 {code}: 全データ取得（2004年～現在）")
             else:
                 # 2回目以降：前日以降のみ
                 last_date = self._get_last_cached_date(code)
                 if last_date is None:
-                    from_date = '2016-01-01'
+                    from_date = '2016-03-20'
                     logger.info(f"📡 {code}: 新規取得（キャッシュなし）")
                 else:
                     # 前営業日の次の日から取得
