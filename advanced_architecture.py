@@ -2,6 +2,7 @@
 """
 【実行版】Stock Analysis Platform v3.0
 実際のデータを config_phase1.json から取得
+日本語ヘッダー対応
 """
 
 import os
@@ -38,20 +39,20 @@ def main():
             metadata = company.get('metadata', {})
             
             test_data.append({
-                'code': company['code'],
-                'name': company['name'],
-                'dividend_yield': metadata.get('dividend_yield', 0),
-                'eps_growth': metadata.get('eps_growth', 0),
-                'per': metadata.get('per', 15),
-                'pbr': metadata.get('pbr', 1.0),
-                'roe': metadata.get('roe', 10.0),  # metadata から取得
-                'doe': metadata.get('doe', 1.0),
-                'score': np.random.randint(50, 100)
+                '企業コード': company['code'],
+                '企業名': company['name'],
+                '配当利回り': metadata.get('dividend_yield', 0),
+                'EPS成長率': metadata.get('eps_growth', 0),
+                'PER': metadata.get('per', 15),
+                'PBR': metadata.get('pbr', 1.0),
+                'ROE': metadata.get('roe', 10.0),
+                'DOE': metadata.get('doe', 1.0),
+                'スコア': np.random.randint(50, 100)
             })
         
         df = pd.DataFrame(test_data)
-        df = df.sort_values('score', ascending=False).reset_index(drop=True)
-        df['rank'] = range(1, len(df) + 1)
+        df = df.sort_values('スコア', ascending=False).reset_index(drop=True)
+        df['順位'] = range(1, len(df) + 1)
         
         logger.info(f"✅ スクリーニング完了: {len(df)} 件")
         
@@ -60,15 +61,17 @@ def main():
         os.makedirs('logs', exist_ok=True)
         os.makedirs('snapshots', exist_ok=True)
         
-        # 5. Excel に出力
+        # 5. Excel に出力（列の順序を調整）
         output_file = 'results/phase1_results.xlsx'
-        df.to_excel(output_file, index=False, sheet_name='Results')
+        columns = ['順位', '企業コード', '企業名', 'スコア', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
+        df_output = df[columns]
+        df_output.to_excel(output_file, index=False, sheet_name='結果')
         
         logger.info(f"✅ Excel 出力完了: {output_file}")
         
         # 6. JSON スナップショット保存
         snapshot_file = f"snapshots/phase1_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        df.to_json(snapshot_file, orient='records', force_ascii=False)
+        df.to_json(snapshot_file, orient='records', force_ascii=False, ensure_ascii=False)
         
         logger.info(f"✅ スナップショット保存: {snapshot_file}")
         
@@ -82,7 +85,7 @@ def main():
         logger.info(f"出力ファイル: {output_file}")
         
         print("\n【結果】")
-        print(df.to_string(index=False))
+        print(df_output.to_string(index=False))
         
         return True
     
