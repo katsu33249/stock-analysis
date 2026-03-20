@@ -99,7 +99,7 @@ class EDINETDBCachedFetcher:
                     'per': float(latest.get('per', 15.0)) if latest.get('per') else 15.0,
                     'dividend_yield': float(latest.get('dividend_yield', 2.0)) if latest.get('dividend_yield') else 2.0,
                     'eps_growth': float(latest.get('eps_growth', 5.0)) if latest.get('eps_growth') else 5.0,
-                    'doe': float(latest.get('de_ratio', 1.0)) if latest.get('de_ratio') else 1.0  # D/E レシオ
+                    'doe': float(latest.get('financial_leverage', 1.0)) if latest.get('financial_leverage') else 1.0  # 財務レバレッジ
                 }
             
             return None
