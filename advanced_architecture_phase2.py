@@ -252,8 +252,11 @@ def main():
         companies_list = config['companies']['data']
         logger.info(f"📊 企業数: {len(companies_list)}")
         
-        # 4. データ取得と検出
-        fetcher = JQuantsDataFetcher(api_key)
+        # 4. キャッシュマネージャーから検出
+        # ※ 事前に jquants_data_manager.py で キャッシュ を更新しておくこと
+        from jquants_data_manager import JQuantsDataManager
+        
+        manager = JQuantsDataManager(api_key)
         detector = ExplosionStockDetector()
         
         results = []
@@ -267,7 +270,7 @@ def main():
             if (idx + 1) % 10 == 0:
                 logger.info(f"進捗: {idx + 1}/{len(companies_list)}")
             
-            df = fetcher.fetch_daily_bars(code)
+            df = manager.get_company_data(code, days=100)
             result = detector.detect(code, name, df)
             
             if result:
