@@ -1,0 +1,612 @@
+{
+  "system": {
+    "name": "Stock Analysis Platform v3.0",
+    "version": "3.0.0",
+    "description": "東証100社版（J-Quants Standard 対応）"
+  },
+  "companies": {
+    "count": 100,
+    "data": [
+      {
+        "code": "1605",
+        "name": "INPEX",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1662",
+        "name": "石油資源開発",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1721",
+        "name": "コムシスホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1735",
+        "name": "光村印刷",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1761",
+        "name": "日本製粉",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1801",
+        "name": "大成建設",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1808",
+        "name": "戸田建設",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1848",
+        "name": "ファナック",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1860",
+        "name": "ヤマダ電機",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1878",
+        "name": "大日本塗料",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1928",
+        "name": "JALUX",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1954",
+        "name": "トーエル",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1988",
+        "name": "武蔵ＨＤ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "1994",
+        "name": "なとり",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2108",
+        "name": "日東工業",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2201",
+        "name": "ヤマザキパン",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2215",
+        "name": "第一屋製パン",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2282",
+        "name": "日本ハム",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2332",
+        "name": "IHI",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2353",
+        "name": "DMG森精機",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2413",
+        "name": "エーザイ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2503",
+        "name": "キリンホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2531",
+        "name": "宝ホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2579",
+        "name": "コーセー",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2587",
+        "name": "サントリーホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2613",
+        "name": "Jオイルミルズ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2676",
+        "name": "高千穂交易",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2768",
+        "name": "双日",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2897",
+        "name": "日本製紙",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "2914",
+        "name": "JT",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3001",
+        "name": "片倉工業",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3099",
+        "name": "ミューチュアル",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3105",
+        "name": "ダイワボウホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3167",
+        "name": "ラクオリア創薬",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3289",
+        "name": "東急不動産ホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3291",
+        "name": "GMOペイメントゲートウェイ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3382",
+        "name": "セブン&アイ・ホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3407",
+        "name": "アイスタイル",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3769",
+        "name": "GMOアドパートナーズ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "3960",
+        "name": "バリューコマース",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "4080",
+        "name": "DJ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "4298",
+        "name": "プロトコーポレーション",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "4689",
+        "name": "ザッパラス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "4755",
+        "name": "楽天",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "4776",
+        "name": "サイボーズ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "5108",
+        "name": "ブリヂストン",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "5411",
+        "name": "ジェイテクト",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "5631",
+        "name": "日本製鋼所",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "5857",
+        "name": "アルプスアルパイン",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6326",
+        "name": "J-ADVAN",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6501",
+        "name": "日立製作所",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6502",
+        "name": "東芝",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6503",
+        "name": "テルモ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6504",
+        "name": "富士通",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6505",
+        "name": "東京ガス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6506",
+        "name": "横河電機",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6507",
+        "name": "シスメックス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6508",
+        "name": "オリンパス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6509",
+        "name": "京セラ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6510",
+        "name": "三菱電機",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6511",
+        "name": "パナソニック",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6512",
+        "name": "KDDI",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6513",
+        "name": "日本光電工業",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6514",
+        "name": "日本ユニシス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6515",
+        "name": "TDK",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6516",
+        "name": "村田製作所",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6517",
+        "name": "キオクシアホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6518",
+        "name": "富士フイルムホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6519",
+        "name": "京都銀行",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6520",
+        "name": "三井住友フィナンシャルグループ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6758",
+        "name": "Sony",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6861",
+        "name": "キーエンス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "6902",
+        "name": "デンソー",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7003",
+        "name": "日本車輌製造",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7011",
+        "name": "MHI",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7012",
+        "name": "川崎重工業",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7013",
+        "name": "IHI",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7202",
+        "name": "いすゞ自動車",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7203",
+        "name": "トヨタ自動車",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7205",
+        "name": "日野自動車",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7211",
+        "name": "三菱自動車工業",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7261",
+        "name": "マツダ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7267",
+        "name": "ホンダ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7270",
+        "name": "富士通",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7731",
+        "name": "ファナック",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7751",
+        "name": "キヤノン",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "7974",
+        "name": "Nintendo",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8001",
+        "name": "伊藤忠商事",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8015",
+        "name": "豊田通商",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8031",
+        "name": "三井物産",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8058",
+        "name": "三菱商事",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8113",
+        "name": "ユニー・ファミリーマートホールディングス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8252",
+        "name": "MrMax",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8306",
+        "name": "三井住友フィナンシャルグループ",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8316",
+        "name": "日本生命保険相互会社",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8333",
+        "name": "岡三証券",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8355",
+        "name": "清水銀行",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8801",
+        "name": "三井不動産",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "8830",
+        "name": "トランスコスモス",
+        "sector": "Multiple",
+        "metadata": {}
+      },
+      {
+        "code": "9001",
+        "name": "東武鉄道",
+        "sector": "Multiple",
+        "metadata": {}
+      }
+    ]
+  }
+}
