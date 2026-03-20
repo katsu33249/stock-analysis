@@ -47,15 +47,15 @@ class JQuantsDataFetcher:
         
         self.request_count += 1
     
-    def fetch_daily_bars(self, code, days=100):
-        """日足データを取得"""
+    def fetch_daily_bars(self, code, days=7300):  # 20年 ≈ 7300日
+        """日足データを取得（20年分一括）"""
         try:
             self.wait_rate_limit()
             
             url = f'{self.base_url}/equities/bars/daily'
             params = {
                 'code': code,
-                'from': (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d'),
+                'from': '2004-01-01',  # 過去20年分
                 'to': datetime.now().strftime('%Y-%m-%d')
             }
             
@@ -76,18 +76,41 @@ class JQuantsDataFetcher:
             return None
 
 class ExplosionStockDetector:
-    """爆発初動株検出エンジン"""
+    """爆発初動株検出エンジン（段階制判定対応）"""
     
     def __init__(self):
         self.thresholds = {
             'volume_ratio': 2.0,
+            'volume_ratio_min': 1.5,  # 必須条件用
             'body_strength': 3.0,
             'price_threshold': 500,
             'trading_value': 1e9
         }
     
+    def _classify_stage(self, score, volume_ratio, has_breakout):
+        """スコアから段階を判定
+        - 監視：40～55点
+        - 押し目/初動狙い：55～70点
+        - 順張りエントリー：70～85点
+        - 主力資金OK：85点以上
+        """
+        
+        # 必須条件チェック（出来高1.5倍 かつ 高値ブレイク）
+        has_essential = (volume_ratio >= self.thresholds['volume_ratio_min'] and has_breakout)
+        
+        if score >= 85 and has_essential:
+            return '主力資金OK', 85
+        elif score >= 70 and has_essential:
+            return '順張りエントリー', 70
+        elif score >= 55:
+            return '押し目/初動狙い', 55
+        elif score >= 40:
+            return '監視', 40
+        else:
+            return None, None
+    
     def detect(self, code, name, df):
-        """爆発初動株を検出"""
+        """爆発初動株を検出（段階制）"""
         
         try:
             if df is None or len(df) < 21:
@@ -102,6 +125,7 @@ class ExplosionStockDetector:
             # 1. 出来高倍率（40点）
             avg_volume = prev_20['AdjVo'].mean()
             volume_ratio = latest['AdjVo'] / avg_volume if avg_volume > 0 else 0
+            volume_score = 0
             if volume_ratio >= self.thresholds['volume_ratio']:
                 volume_score = min(40, (volume_ratio - 1) * 20)
                 score += volume_score
@@ -109,7 +133,10 @@ class ExplosionStockDetector:
             
             # 2. 高値ブレークアウト（25点）
             high_20 = prev_20['AdjH'].max()
+            has_breakout = False
+            breakout_score = 0
             if latest['AdjH'] > high_20:
+                has_breakout = True
                 breakout_pct = (latest['AdjH'] - high_20) / high_20 * 100
                 breakout_score = min(25, breakout_pct * 2)
                 score += breakout_score
@@ -136,13 +163,19 @@ class ExplosionStockDetector:
                 score += trend_score
                 details.append(f"トレンド: 上昇トレンド (10点)")
             
-            if score >= 50:
+            # 段階判定
+            stage, threshold = self._classify_stage(score, volume_ratio, has_breakout)
+            
+            if stage:  # 40点以上なら返す
                 return {
                     'code': code,
                     'name': name,
                     'price': latest['AdjC'],
                     'volume': latest['AdjVo'],
                     'score': score,
+                    'volume_ratio': volume_ratio,
+                    'has_breakout': has_breakout,
+                    'stage': stage,
                     'details': ' | '.join(details)
                 }
             
@@ -251,10 +284,7 @@ def main():
             
             time.sleep(0.1)
         
-        # 5. 爆発初動株を抽出
-        explosion_stocks = [r for r in results if r['score'] >= 50]
-        
-        # 6. 全社のスコアを DataFrame に変換
+        # 5. 全社のスコアを DataFrame に変換
         all_company_scores = []
         for company in companies_list:
             code = company['code']
@@ -294,44 +324,59 @@ def main():
                     'doe': metadata.get('doe', 0)
                 })
         
-        # スコアでソート
+        # 5. 爆発初動株を段階別に分類
         df_all = pd.DataFrame(all_company_scores)
         df_all = df_all.sort_values('score', ascending=False).reset_index(drop=True)
         df_all['順位'] = range(1, len(df_all) + 1)
         
-        # 爆発初動株のみ
-        df_results = pd.DataFrame(explosion_stocks)
-        if len(df_results) > 0:
-            df_results = df_results.sort_values('score', ascending=False).reset_index(drop=True)
-            df_results['順位'] = range(1, len(df_results) + 1)
-        else:
-            df_results = pd.DataFrame(columns=['順位', 'code', 'name', 'score', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe'])
+        # 段階別に分類
+        df_monitoring = df_all[(df_all['score'] >= 40) & (df_all['score'] < 55)]  # 監視
+        df_entry = df_all[(df_all['score'] >= 55) & (df_all['score'] < 70)]  # 押し目/初動狙い
+        df_trend = df_all[(df_all['score'] >= 70) & (df_all['score'] < 85)]  # 順張りエントリー
+        df_strong = df_all[df_all['score'] >= 85]  # 主力資金OK
         
-        logger.info(f"✅ 爆発初動株: {len(df_results)} 件")
-        logger.info(f"📊 全社スコア: {len(df_all)} 件")
+        logger.info(f"✅ 段階別分類完了:")
+        logger.info(f"  📊 全社: {len(df_all)} 社")
+        logger.info(f"  👀 監視（40～55点）: {len(df_monitoring)} 社")
+        logger.info(f"  🎯 押し目/初動狙い（55～70点）: {len(df_entry)} 社")
+        logger.info(f"  🚀 順張りエントリー（70～85点）: {len(df_trend)} 社")
+        logger.info(f"  💪 主力資金OK（85点以上）: {len(df_strong)} 社")
         
         # 6. ディレクトリを作成
         os.makedirs('results', exist_ok=True)
         os.makedirs('logs', exist_ok=True)
         os.makedirs('snapshots', exist_ok=True)
         
-        # 7. Excel に出力（2シート）
+        # 7. Excel に出力（複数シート：段階別）
         output_file = 'results/phase2_results.xlsx'
         
-        # Sheet 1: 全社スコア
         columns_all = ['順位', 'code', 'name', 'score', 'price', 'volume', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe']
-        df_output_all = df_all[columns_all]
-        df_output_all.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
         
-        # Sheet 2: 爆発初動株のみ
-        columns_explosion = ['順位', 'code', 'name', 'score', 'price', 'volume', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe']
-        df_output_explosion = df_results[columns_explosion]
-        df_output_explosion.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
-        
-        # Excel ファイルに複数シートで保存
         with pd.ExcelWriter(output_file, engine='openpyxl') as writer:
+            # Sheet 1: 全社スコア
+            df_output_all = df_all[columns_all].copy()
+            df_output_all.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
             df_output_all.to_excel(writer, sheet_name='全社スコア', index=False)
-            df_output_explosion.to_excel(writer, sheet_name='爆発初動株', index=False)
+            
+            # Sheet 2: 監視（40～55点）
+            df_output_monitoring = df_monitoring[columns_all].copy()
+            df_output_monitoring.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
+            df_output_monitoring.to_excel(writer, sheet_name='監視_40～55', index=False)
+            
+            # Sheet 3: 押し目/初動狙い（55～70点）
+            df_output_entry = df_entry[columns_all].copy()
+            df_output_entry.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
+            df_output_entry.to_excel(writer, sheet_name='押し目_55～70', index=False)
+            
+            # Sheet 4: 順張りエントリー（70～85点）
+            df_output_trend = df_trend[columns_all].copy()
+            df_output_trend.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
+            df_output_trend.to_excel(writer, sheet_name='順張り_70～85', index=False)
+            
+            # Sheet 5: 主力資金OK（85点以上）
+            df_output_strong = df_strong[columns_all].copy()
+            df_output_strong.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
+            df_output_strong.to_excel(writer, sheet_name='主力_85+', index=False)
         
         logger.info(f"✅ Excel 出力完了: {output_file}")
         
@@ -343,20 +388,25 @@ def main():
         
         # 9. Discord に送信
         webhook_url = os.getenv('DISCORD_WEBHOOK')
-        send_to_discord(webhook_url, output_file, df_output_explosion)
+        send_to_discord(webhook_url, output_file, df_strong)
         
-        # 10. ログ出力
+        # 11. ログ出力
         logger.info("=" * 70)
         logger.info("Phase 2 Screening 完了")
         logger.info("=" * 70)
         logger.info(f"企業データ抽出: ✅ 完了 ({len(companies_list)} 社)")
         logger.info(f"全社スコア計算: ✅ 完了 ({len(df_all)} 社)")
-        logger.info(f"爆発初動検出: ✅ 完了 ({len(df_results)} 件)")
-        logger.info(f"結果保存: ✅ 完了 (全社スコア + 爆発初動株)")
+        logger.info(f"段階別分類: ✅ 完了")
+        logger.info(f"  👀 監視（40～55点）: {len(df_monitoring)} 社")
+        logger.info(f"  🎯 押し目/初動狙い（55～70点）: {len(df_entry)} 社")
+        logger.info(f"  🚀 順張りエントリー（70～85点）: {len(df_trend)} 社")
+        logger.info(f"  💪 主力資金OK（85点以上）: {len(df_strong)} 社")
+        logger.info(f"結果保存: ✅ 完了 (段階別 5シート)")
         logger.info(f"Discord 送信: ✅ 完了")
         
-        print("\n【爆発初動株ランキング (Top 20)】")
-        print(df_output_explosion.head(20).to_string(index=False))
+        if len(df_strong) > 0:
+            print("\n【主力資金OK（85点以上）】")
+            print(df_output_strong.to_string(index=False))
         
         return True
     
