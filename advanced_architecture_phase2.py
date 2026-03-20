@@ -236,7 +236,7 @@ def main():
     
     try:
         # 1. 設定ファイルを読み込み
-        logger.info("📖 config_phase2.json を読み込み中...")
+        logger.info("📖 config_phase2_final.json を読み込み中...")
         with open('config_phase2_final.json', 'r', encoding='utf-8') as f:
             config = json.load(f)
         
