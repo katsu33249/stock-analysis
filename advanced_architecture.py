@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 【実行版】Stock Analysis Platform v3.0
-実際にスクリーニング実行して Excel に結果を出力
+実際のデータを config_phase1.json から取得
 """
 
 import os
@@ -32,17 +32,20 @@ def main():
         companies = config['companies']['data']
         logger.info(f"📊 企業数: {len(companies)}")
         
-        # 3. テストデータを作成（実データの代わり）
+        # 3. metadata から実際のデータを取得
         test_data = []
         for company in companies[:15]:  # Phase 1 は 15社
+            metadata = company.get('metadata', {})
+            
             test_data.append({
                 'code': company['code'],
                 'name': company['name'],
-                'dividend_yield': company['metadata'].get('dividend_yield', 0),
-                'eps_growth': company['metadata'].get('eps_growth', 0),
-                'per': company['metadata'].get('per', 15),
-                'pbr': company['metadata'].get('pbr', 1.0),
-                'roe': 10.0,
+                'dividend_yield': metadata.get('dividend_yield', 0),
+                'eps_growth': metadata.get('eps_growth', 0),
+                'per': metadata.get('per', 15),
+                'pbr': metadata.get('pbr', 1.0),
+                'roe': metadata.get('roe', 10.0),  # metadata から取得
+                'doe': metadata.get('doe', 1.0),
                 'score': np.random.randint(50, 100)
             })
         
@@ -79,12 +82,14 @@ def main():
         logger.info(f"出力ファイル: {output_file}")
         
         print("\n【結果】")
-        print(df.head(10).to_string())
+        print(df.to_string(index=False))
         
         return True
     
     except Exception as e:
         logger.error(f"❌ エラー: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 if __name__ == '__main__':
