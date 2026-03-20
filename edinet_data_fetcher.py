@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-EDINET DB API v2 からデータ取得（キャッシュ機能付き）
+EDINET DB API v1 からデータ取得（キャッシュ機能付き）
 18時間経過したデータのみ再取得して API 制限を回避
+証券コード(4桁) → EDINET コード(E+5桁) 変換対応
 """
 
 import os
@@ -16,14 +17,15 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 class EDINETDBCachedFetcher:
-    """EDINET DB API v2 からデータを取得（キャッシュ機能付き）"""
+    """EDINET DB API v1 からデータを取得（キャッシュ機能付き）"""
     
     def __init__(self, api_key):
         self.api_key = api_key
-        self.base_url = 'https://edinetdb.jp/api/v2'
-        self.headers = {'Authorization': f'Bearer {api_key}'}
+        self.base_url = 'https://edinetdb.jp/v1'
+        self.headers = {'X-API-Key': api_key}
         self.cache_file = 'edinet_cache.csv'
         self.cache_df = self._load_cache()
+        self.api_call_count = 0
     
     def _load_cache(self):
         """キャッシュ CSV を読み込み"""
@@ -34,10 +36,10 @@ class EDINETDBCachedFetcher:
                 return df
             except Exception as e:
                 logger.warning(f"⚠️ キャッシュ読み込み失敗: {e}")
-                return pd.DataFrame(columns=['code', 'name', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'doe', 'last_updated'])
+                return pd.DataFrame(columns=['sec_code', 'edinet_code', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'last_updated'])
         else:
             logger.info("📂 キャッシュなし（初回実行）")
-            return pd.DataFrame(columns=['code', 'name', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'doe', 'last_updated'])
+            return pd.DataFrame(columns=['sec_code', 'edinet_code', 'roe', 'pbr', 'per', 'dividend_yield', 'eps_growth', 'last_updated'])
     
     def _is_cache_expired(self, last_updated_str):
         """キャッシュが18時間経過したか判定"""
@@ -48,9 +50,9 @@ class EDINETDBCachedFetcher:
         except:
             return True
     
-    def _needs_update(self, code):
+    def _needs_update(self, sec_code):
         """企業コードが更新対象かチェック"""
-        cached = self.cache_df[self.cache_df['code'] == code]
+        cached = self.cache_df[self.cache_df['sec_code'] == sec_code]
         
         if len(cached) == 0:
             return True  # キャッシュなし → 取得必要
@@ -58,93 +60,119 @@ class EDINETDBCachedFetcher:
         last_updated = cached.iloc[0]['last_updated']
         return self._is_cache_expired(last_updated)
     
-    def get_company_financials(self, code):
-        """企業の財務情報を取得"""
+    def search_company(self, sec_code):
+        """証券コードから EDINET コードを検索"""
         try:
-            url = f'{self.base_url}/companies/{code}'
+            url = f'{self.base_url}/search'
+            params = {'q': sec_code, 'limit': 1}
+            
+            resp = requests.get(url, params=params, headers={}, timeout=15)
+            resp.raise_for_status()
+            
+            data = resp.json()
+            if data.get('data') and len(data['data']) > 0:
+                return data['data'][0]['edinet_code']
+            
+            return None
+        
+        except Exception as e:
+            logger.warning(f"⚠️ {sec_code} 検索失敗: {e}")
+            return None
+    
+    def get_company_ratios(self, edinet_code):
+        """EDINET コードから財務指標を取得"""
+        try:
+            url = f'{self.base_url}/companies/{edinet_code}/ratios'
             
             resp = requests.get(url, headers=self.headers, timeout=15)
             resp.raise_for_status()
             
-            data = resp.json()
+            self.api_call_count += 1
             
-            # レスポンスから財務指標を抽出
-            if data.get('success'):
-                company = data.get('data', {})
+            data = resp.json()
+            if data.get('data') and len(data['data']) > 0:
+                latest = data['data'][0]  # 最新年度
+                
                 return {
-                    'roe': float(company.get('roe', 10.0)),
-                    'pbr': float(company.get('pbr', 1.0)),
-                    'per': float(company.get('per', 15.0)),
-                    'dividend_yield': float(company.get('dividend_yield', 2.0)),
-                    'eps_growth': float(company.get('eps_growth', 5.0)),
-                    'doe': float(company.get('doe', 1.0))
+                    'roe': float(latest.get('roe', 10.0)) if latest.get('roe') else 10.0,
+                    'pbr': float(latest.get('bps', 1.0)) if latest.get('bps') else 1.0,  # bps から PBR を計算（簡易）
+                    'per': float(latest.get('per', 15.0)) if latest.get('per') else 15.0,
+                    'dividend_yield': float(latest.get('dividend_yield', 2.0)) if latest.get('dividend_yield') else 2.0,
+                    'eps_growth': float(latest.get('eps_growth', 5.0)) if latest.get('eps_growth') else 5.0
                 }
             
             return None
         
         except Exception as e:
-            logger.warning(f"⚠️ {code} API 呼び出し失敗: {e}")
+            logger.warning(f"⚠️ {edinet_code} 財務指標取得失敗: {e}")
             return None
     
     def enrich_company_data(self, companies):
         """企業データを充実させる（キャッシュ優先、必要時のみ API 呼び出し）"""
         logger.info("📊 企業データを充実させる中...")
         
-        api_calls = 0
         cache_hits = 0
         enriched_companies = []
         new_rows = []
         
         for idx, company in enumerate(companies):
-            code = company['code']
+            sec_code = company['code']
             name = company['name']
             
             if (idx + 1) % 10 == 0:
-                logger.info(f"進捗: {idx + 1}/{len(companies)} (API呼び出し: {api_calls}, キャッシュ: {cache_hits})")
+                logger.info(f"進捗: {idx + 1}/{len(companies)} (API呼び出し: {self.api_call_count}, キャッシュ: {cache_hits})")
             
             # キャッシュをチェック
-            if not self._needs_update(code):
+            if not self._needs_update(sec_code):
                 # キャッシュが有効 → キャッシュから読み込み
-                cached = self.cache_df[self.cache_df['code'] == code].iloc[0]
+                cached = self.cache_df[self.cache_df['sec_code'] == sec_code].iloc[0]
                 company['metadata'].update({
                     'roe': float(cached['roe']),
                     'pbr': float(cached['pbr']),
                     'per': float(cached['per']),
                     'dividend_yield': float(cached['dividend_yield']),
                     'eps_growth': float(cached['eps_growth']),
-                    'doe': float(cached['doe']),
+                    'doe': 1.0,
                     'edinet_updated': cached['last_updated']
                 })
                 cache_hits += 1
-                logger.debug(f"✅ {code}: キャッシュから読み込み")
+                logger.debug(f"✅ {sec_code}: キャッシュから読み込み")
             else:
-                # API から新規取得
-                financials = self.get_company_financials(code)
+                # EDINET コードを検索
+                edinet_code = self.search_company(sec_code)
                 
-                if financials:
-                    company['metadata'].update(financials)
-                    company['metadata']['edinet_updated'] = datetime.now().isoformat()
+                if edinet_code:
+                    # 財務指標を取得
+                    ratios = self.get_company_ratios(edinet_code)
                     
-                    # キャッシュに追加
-                    new_rows.append({
-                        'code': code,
-                        'name': name,
-                        'roe': financials['roe'],
-                        'pbr': financials['pbr'],
-                        'per': financials['per'],
-                        'dividend_yield': financials['dividend_yield'],
-                        'eps_growth': financials['eps_growth'],
-                        'doe': financials['doe'],
-                        'last_updated': datetime.now().isoformat()
-                    })
-                    
-                    api_calls += 1
-                    logger.info(f"📡 {code} {name}: ROE={financials['roe']:.1f}%, PBR={financials['pbr']:.2f}")
+                    if ratios:
+                        company['metadata'].update(ratios)
+                        company['metadata']['doe'] = 1.0
+                        company['metadata']['edinet_updated'] = datetime.now().isoformat()
+                        
+                        # キャッシュに追加
+                        new_rows.append({
+                            'sec_code': sec_code,
+                            'edinet_code': edinet_code,
+                            'roe': ratios['roe'],
+                            'pbr': ratios['pbr'],
+                            'per': ratios['per'],
+                            'dividend_yield': ratios['dividend_yield'],
+                            'eps_growth': ratios['eps_growth'],
+                            'last_updated': datetime.now().isoformat()
+                        })
+                        
+                        logger.info(f"📡 {sec_code} {name}: ROE={ratios['roe']:.1f}%, 配当利回り={ratios['dividend_yield']:.1f}%")
+                    else:
+                        logger.warning(f"⚠️ {sec_code}: 財務指標取得失敗、デフォルト値を使用")
+                        company['metadata']['doe'] = 1.0
+                        company['metadata']['edinet_updated'] = datetime.now().isoformat()
                 else:
-                    logger.warning(f"⚠️ {code}: API 取得失敗、デフォルト値を使用")
+                    logger.warning(f"⚠️ {sec_code}: EDINET コード検索失敗、デフォルト値を使用")
+                    company['metadata']['doe'] = 1.0
                     company['metadata']['edinet_updated'] = datetime.now().isoformat()
                 
-                time.sleep(0.2)  # API レート制限対応
+                time.sleep(0.1)  # API レート制限対応
             
             enriched_companies.append(company)
         
@@ -152,7 +180,7 @@ class EDINETDBCachedFetcher:
         if new_rows:
             new_df = pd.DataFrame(new_rows)
             # 古いデータを削除して新しいデータを追加
-            self.cache_df = self.cache_df[~self.cache_df['code'].isin([row['code'] for row in new_rows])]
+            self.cache_df = self.cache_df[~self.cache_df['sec_code'].isin([row['sec_code'] for row in new_rows])]
             self.cache_df = pd.concat([self.cache_df, new_df], ignore_index=True)
         
         # CSV に保存
@@ -160,7 +188,7 @@ class EDINETDBCachedFetcher:
         logger.info(f"💾 キャッシュを保存: {self.cache_file}")
         
         logger.info("=" * 70)
-        logger.info(f"📊 API 呼び出し: {api_calls} 件")
+        logger.info(f"📊 API 呼び出し: {self.api_call_count} 件")
         logger.info(f"✅ キャッシュ使用: {cache_hits} 件")
         logger.info(f"📂 キャッシュ総数: {len(self.cache_df)} 件")
         logger.info("=" * 70)
@@ -200,7 +228,7 @@ def main():
         json.dump(config, f, ensure_ascii=False, indent=2)
     
     logger.info("=" * 70)
-    logger.info("✅ config_phase2.json に EDINET DB データを統合完了")
+    logger.info("✅ config_phase2.json に EDINET DB v1 データを統合完了")
     logger.info("=" * 70)
     
     return True
