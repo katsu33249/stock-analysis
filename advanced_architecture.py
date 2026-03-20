@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 【本番版】Stock Analysis Platform v3.0
-J-Quants API から実データを取得して爆発初動株を検出
-Discord に爆発初動ランキング（テーブル）と Excel ファイルを送信
+J-Quants API + config_phase1.json 財務データ
+爆発初動株を検出して Discord に送信
 """
 
 import os
@@ -167,10 +167,10 @@ def send_to_discord(webhook_url, excel_file, df_results):
         if len(df_results) > 0:
             for idx, row in df_results.iterrows():
                 rank = int(row['順位'])
-                code = row['code']
-                name = row['name'][:8].ljust(8)
-                score = int(row['score'])
-                price = int(row['price'])
+                code = row['企業コード']
+                name = row['企業名'][:8].ljust(8)
+                score = int(row['スコア'])
+                price = int(row['株価'])
                 table_content += f"{rank:2d}   | {code}    | {name} | {score:3d}  | ¥{price}\n"
         else:
             table_content += "爆発初動株が検出されませんでした\n"
@@ -216,8 +216,8 @@ def main():
             return False
         
         # 3. 企業リストを取得
-        companies = config['companies']['data'][:15]
-        logger.info(f"📊 企業数: {len(companies)}")
+        companies_list = config['companies']['data'][:15]
+        logger.info(f"📊 企業数: {len(companies_list)}")
         
         # 4. データ取得と検出
         fetcher = JQuantsDataFetcher(api_key)
@@ -226,14 +226,23 @@ def main():
         results = []
         
         logger.info("🔍 爆発初動株を検出中...")
-        for company in companies:
+        for company in companies_list:
             code = company['code']
             name = company['name']
+            metadata = company.get('metadata', {})
             
             df = fetcher.fetch_daily_bars(code)
             result = detector.detect(code, name, df)
             
             if result:
+                # metadata から財務情報を追加
+                result['dividend_yield'] = metadata.get('dividend_yield', 0)
+                result['eps_growth'] = metadata.get('eps_growth', 0)
+                result['per'] = metadata.get('per', 0)
+                result['pbr'] = metadata.get('pbr', 0)
+                result['roe'] = metadata.get('roe', 0)
+                result['doe'] = metadata.get('doe', 0)
+                
                 results.append(result)
                 logger.info(f"🎯 {code} {name}: スコア {result['score']:.0f}")
             
@@ -245,7 +254,7 @@ def main():
             df_results = df_results.sort_values('score', ascending=False).reset_index(drop=True)
             df_results['順位'] = range(1, len(df_results) + 1)
         else:
-            df_results = pd.DataFrame(columns=['順位', 'code', 'name', 'price', 'volume', 'score', 'details'])
+            df_results = pd.DataFrame(columns=['順位', '企業コード', '企業名', 'スコア', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE'])
         
         logger.info(f"✅ 検出完了: {len(df_results)} 件")
         
@@ -256,9 +265,9 @@ def main():
         
         # 7. Excel に出力
         output_file = 'results/phase1_results.xlsx'
-        columns = ['順位', 'code', 'name', 'score', 'price', 'volume', 'details']
+        columns = ['順位', 'code', 'name', 'score', 'dividend_yield', 'eps_growth', 'per', 'pbr', 'roe', 'doe']
         df_output = df_results[columns]
-        df_output.columns = ['順位', '企業コード', '企業名', 'スコア', '株価', '出来高', '詳細']
+        df_output.columns = ['順位', '企業コード', '企業名', 'スコア', '配当利回り', 'EPS成長率', 'PER', 'PBR', 'ROE', 'DOE']
         df_output.to_excel(output_file, index=False, sheet_name='爆発初動株')
         
         logger.info(f"✅ Excel 出力完了: {output_file}")
@@ -271,7 +280,7 @@ def main():
         
         # 9. Discord に送信
         webhook_url = os.getenv('DISCORD_WEBHOOK')
-        send_to_discord(webhook_url, output_file, df_results)
+        send_to_discord(webhook_url, output_file, df_output)
         
         # 10. ログ出力
         logger.info("=" * 70)
