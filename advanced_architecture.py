@@ -2,7 +2,7 @@
 """
 【本番版】Stock Analysis Platform v3.0
 J-Quants API から実データを取得して爆発初動株を検出
-Discord に Excel ファイルと Embed メッセージを送信
+Discord に爆発初動ランキング（テーブル）と Excel ファイルを送信
 """
 
 import os
@@ -153,30 +153,37 @@ class ExplosionStockDetector:
             return None
 
 def send_to_discord(webhook_url, excel_file, df_results):
-    """Discord に Excel ファイルと Embed メッセージを送信"""
+    """Discord に爆発初動ランキング（テーブル）と Excel ファイルを送信"""
     try:
         if not webhook_url:
             logger.warning("⚠️ Discord 送信をスキップ")
             return
         
-        # 1. Embed メッセージで結果を表示
-        embed_content = "🚀 **爆発初動株ランキング**\n\n"
+        # 1. テーブル形式でランキングを作成
+        table_content = "```\n"
+        table_content += "順位 | 企業コード | 企業名        | スコア | 株価\n"
+        table_content += "-" * 60 + "\n"
         
         if len(df_results) > 0:
-            for idx, row in df_results.head(10).iterrows():
-                embed_content += f"**{int(row['順位'])}位. {row['code']} {row['name']}**\n"
-                embed_content += f"スコア: {int(row['score'])}点 | 株価: ¥{row['price']:.0f}\n"
-                embed_content += f"{row['details']}\n\n"
+            for idx, row in df_results.iterrows():
+                rank = int(row['順位'])
+                code = row['code']
+                name = row['name'][:8].ljust(8)
+                score = int(row['score'])
+                price = int(row['price'])
+                table_content += f"{rank:2d}   | {code}    | {name} | {score:3d}  | ¥{price}\n"
         else:
-            embed_content += "爆発初動株が検出されませんでした\n"
+            table_content += "爆発初動株が検出されませんでした\n"
         
-        # Discord メッセージ送信（Embed）
+        table_content += "```"
+        
+        # Discord に テーブル メッセージ送信
         data = {
-            'content': embed_content,
+            'content': f"🚀 **爆発初動株ランキング**\n\n{table_content}",
             'username': 'Stock Analysis Bot'
         }
         requests.post(webhook_url, json=data, timeout=30)
-        logger.info("✅ Discord に Embed メッセージを送信")
+        logger.info("✅ Discord にランキングを送信")
         
         # 2. Excel ファイルを送信
         if os.path.exists(excel_file):
