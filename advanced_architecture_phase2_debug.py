@@ -35,7 +35,7 @@ class JQuantsDataFetcher:
             url = f'{self.base_url}/equities/bars/daily'
             params = {
                 'code': code,
-                'from': '2016-01-01',  # 過去20年分
+                'from': '2016-03-20',  # 過去20年分
                 'to': datetime.now().strftime('%Y-%m-%d')
             }
             
