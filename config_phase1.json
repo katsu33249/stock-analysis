@@ -1,0 +1,17 @@
+{
+  "system": {
+    "name": "Stock Analysis Platform v3.0",
+    "version": "3.0.0",
+    "description": "設定ファイル駆動の機敏な株式分析システム"
+  },
+  "phase": {
+    "current": "phase_1"
+  },
+  "companies": {
+    "data": [
+      {"code": "1143", "name": "FPG"},
+      {"code": "3284", "name": "フージャース"},
+      {"code": "9762", "name": "T&D"}
+    ]
+  }
+}
