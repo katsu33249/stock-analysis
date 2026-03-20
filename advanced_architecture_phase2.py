@@ -236,8 +236,8 @@ def main():
     
     try:
         # 1. 設定ファイルを読み込み
-        logger.info("📖 config_phase2_final.json を読み込み中...")
-        with open('config_phase2_final.json', 'r', encoding='utf-8') as f:
+        logger.info("📖 config_phase2_87companies.json を読み込み中...")
+        with open('config_phase2_87companies.json', 'r', encoding='utf-8') as f:
             config = json.load(f)
         
         logger.info(f"✅ 設定読み込み完了: {config['system']['name']}")
