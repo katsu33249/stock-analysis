@@ -1,4 +1,25 @@
+# Stock Analysis Platform v3.0
+# Python Dependencies
+
+# API・データ取得
 requests==2.31.0
 pandas==2.0.3
 numpy==1.24.3
+
+# Excel 出力
 openpyxl==3.1.2
+
+# ロギング（標準ライブラリのみ使用）
+# logging (built-in)
+
+# テスト用（オプション）
+pytest==7.4.0
+pytest-cov==4.1.0
+
+# コード品質（オプション）
+black==23.7.0
+flake8==6.0.0
+pylint==2.17.5
+
+# ドキュメント（オプション）
+sphinx==7.1.2
